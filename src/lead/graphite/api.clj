@@ -23,8 +23,9 @@
             :headers {"Content-Type" "application/python-pickle"}
             :body (write-response pickle/write-query-results results)})))
 
-  (GET "/render/" [format target from until]
-       (when (= "pickle" format)
+  (GET "/render/" [format pickle target from until]
+       (when (or (= "pickle" format)
+                 (= "true" pickle))
          (let [result (run (parse target) {:start (Integer/parseInt from) :end (Integer/parseInt until)})]
            {:status 200
             :headers {"Content-Type" "application/python-pickle"}
