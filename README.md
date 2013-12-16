@@ -25,6 +25,8 @@ Add your Lead server to Graphite's `CLUSTER_SERVERS` list. In `local_settings.py
 CLUSTER_SERVERS = ['lead-host:port']
 ```
 
+See "[Cluster Configuration](http://graphite.readthedocs.org/en/latest/config-local-settings.html#cluster-configuration)" in the Graphite documentation for more details on Graphite settings.
+
 ## Compatibility
 
 Compatible with Graphite versions
@@ -35,4 +37,4 @@ Compatible with Graphite versions
 * 0.9.10
 * 0.9.12
 
-Graphite versions 0.9.6 and 0.9.11 are broken (https://bugs.launchpad.net/graphite/+bug/595652, http://graphite.readthedocs.org/en/0.9.12/releases/0_9_11.html) and don't support CLUSTER_SERVERS without a patch.
+Graphite versions 0.9.6 and 0.9.11 are broken (https://bugs.launchpad.net/graphite/+bug/595652, http://graphite.readthedocs.org/en/0.9.12/releases/0_9_11.html) and don't support `CLUSTER_SERVERS` without a patch.
