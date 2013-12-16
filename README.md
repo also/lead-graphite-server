@@ -2,6 +2,31 @@
 
 Let Graphite query your data.
 
+## Usage
+
+Configure a [Lead](https://github.com/also/lead) server with a dependency on
+
+```
+[com.ryanberdeen/lead-graphite-server "0.1.0-SNAPSHOT"]
+```
+
+In your lead settings file, add the API handler:
+
+```clojure
+(require 'lead.graphite.api)
+(add-routes lead.graphite.api/handler)
+```
+
+Graphite requires that you expose Lead over HTTP at `/`; using `set-uri-prefix` or HTTPS won't work.
+
+Add your Lead server to Graphite's `CLUSTER_SERVERS` list. In `local_settings.py`:
+
+```python
+CLUSTER_SERVERS = ['lead-host:port']
+```
+
+## Compatibility
+
 Compatible with Graphite versions
 
 * 0.9.7c
