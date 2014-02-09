@@ -3,6 +3,8 @@
             [lead.functions :refer [run]]
             [lead.parser :refer [parse]]
             [lead.connector :as conn]
+            [lead.api :as api]
+            [lead.core]
             [compojure.core :refer [defroutes GET]]
             [clojure.tools.logging :refer [warn]]))
 
@@ -15,6 +17,13 @@
         (catch Exception e
           (warn e "Exception building response"))))))
 
+(defn- series->graphite-format [series]
+  {:target (:name series)
+   :datapoints
+    (map vector
+         (:values series)
+         (range (:start series) Double/POSITIVE_INFINITY (:step series)))})
+
 (defroutes handler
   (GET "/metrics/find/" [format query from until]
        (when (= "pickle" format)
@@ -23,10 +32,20 @@
             :headers {"Content-Type" "application/python-pickle"}
             :body (write-response pickle/write-query-results results)})))
 
-  (GET "/render/" [format pickle target from until]
-       (when (or (= "pickle" format)
-                 (= "true" pickle))
-         (let [result (run (parse target) {:start (Integer/parseInt from) :end (Integer/parseInt until)})]
-           {:status 200
+  (GET "/render/" [format pickle target & params]
+       (cond
+         (or (= "pickle" format)
+             (= "true" pickle))
+         (let [opts (api/parse-request params)
+               targets (if (string? target) [target] target)
+               result (lead.core/eval-targets opts targets)]
+           {:status  200
             :headers {"Content-Type" "application/python-pickle"}
-            :body (write-response pickle/write-serieses result)}))))
+            :body    (write-response pickle/write-serieses result)})
+
+         (= "json" format)
+         (let [opts (api/parse-request params)
+               targets (if (string? target) [target] target)
+               result (lead.core/eval-targets targets opts)]
+           {:status  200
+            :body    (map series->graphite-format result)}))))
