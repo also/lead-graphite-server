@@ -38,7 +38,7 @@
              (= "true" pickle))
          (let [opts (api/parse-request params)
                targets (if (string? target) [target] target)
-               result (lead.core/eval-targets opts targets)]
+               result (lead.core/eval-targets targets opts)]
            {:status  200
             :headers {"Content-Type" "application/python-pickle"}
             :body    (write-response pickle/write-serieses result)})
