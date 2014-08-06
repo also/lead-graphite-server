@@ -24,6 +24,9 @@
          (:values series)
          (range (:start series) Double/POSITIVE_INFINITY (:step series)))})
 
+(defn eval-targets [targets opts]
+  (flatten (vals (lead.core/eval-targets targets opts))))
+
 (defroutes handler
   (GET "/metrics/find/" [format query from until]
        (when (= "pickle" format)
@@ -38,7 +41,7 @@
              (= "true" pickle))
          (let [opts (api/parse-request params)
                targets (if (string? target) [target] target)
-               result (lead.core/eval-targets targets opts)]
+               result (eval-targets targets opts)]
            {:status  200
             :headers {"Content-Type" "application/python-pickle"}
             :body    (write-response pickle/write-serieses result)})
@@ -46,6 +49,6 @@
          (= "json" format)
          (let [opts (api/parse-request params)
                targets (if (string? target) [target] target)
-               result (lead.core/eval-targets targets opts)]
+               result (eval-targets targets opts)]
            {:status  200
             :body    (map series->graphite-format result)}))))
