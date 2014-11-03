@@ -4,7 +4,7 @@
             [lead.parser :refer [parse]]
             [lead.connector :as conn]
             [lead.api :as api]
-            [lead.core]
+            [lead.api]
             [compojure.core :refer [defroutes GET]]
             [clojure.tools.logging :refer [warn]]))
 
@@ -25,7 +25,7 @@
          (range (:start series) Double/POSITIVE_INFINITY (:step series)))})
 
 (defn eval-targets [targets opts]
-  (flatten (vals (lead.core/eval-targets targets opts))))
+  (flatten (vals (lead.api/eval-targets targets opts))))
 
 (defroutes handler
   (GET "/metrics/find/" [format query from until]
