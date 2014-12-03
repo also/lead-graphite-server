@@ -25,7 +25,7 @@
          (range (:start series) Double/POSITIVE_INFINITY (:step series)))})
 
 (defn eval-targets [targets opts]
-  (flatten (vals (lead.api/eval-targets targets opts))))
+  (vec (flatten (map :result (lead.api/eval-targets targets opts)))))
 
 (defroutes handler
   (GET "/metrics/find/" [format query from until]
